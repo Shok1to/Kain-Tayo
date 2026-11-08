@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* Kain Tayo palette: flat, bold, kitchen colors */
+@theme inline {
+  --color-ink: #24331f; /* pandan green, used for text */
+  --color-cream: #fff4e6;
+  --color-lime: #cfe85a; /* calamansi */
+  --color-mint: #a8e68c;
+  --color-mango: #ffc933;
+  --color-ube: #cdb4f6;
+  --color-tomato: #ff8a65;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-space-mono);
+  --font-display: var(--font-instrument);
+}
+
+html, body { overflow-x: clip; }
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+/* ---------- motion ---------- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(var(--r, 0deg)); }
+  50% { transform: rotate(calc(var(--r, 0deg) + 5deg)) translateY(-8px); }
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(9vw, -7vh) scale(1.18); }
+  66% { transform: translate(-7vw, 6vh) scale(0.92); }
+}
+@keyframes kenburns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.14) translate(-1.5%, -1%); }
+}
+@keyframes pop {
+  0% { transform: scale(0.5); }
+  70% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.animate-fade-up { animation: fade-up 0.55s ease-out both; }
+.animate-wiggle { animation: wiggle 5s ease-in-out infinite; }
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-drift { animation: drift var(--d, 20s) ease-in-out infinite; }
+.animate-marquee-slow { animation: marquee 70s linear infinite; }
+.animate-kenburns { animation: kenburns 24s ease-in-out infinite alternate; }
+.animate-pop { animation: pop 0.35s ease-out; }
+
+/* ---------- reusable looks ---------- */
+/* The display font only has one weight, so never fake a bold. */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em;
+}
+
+/* Small uppercase typewriter labels */
+.label {
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+}
+
+/* Chunky pill button with a hard offset shadow on hover */
+.btn-primary {
+  display: inline-block;
+  background: var(--color-ink);
+  color: var(--color-lime);
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s;
+}
+.btn-primary:hover {
+  background: var(--color-lime);
+  color: var(--color-ink);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-ink);
+  outline: 2px solid var(--color-ink);
+}
+.btn-primary:active {
+  transform: translate(0, 0);
+  box-shadow: none;
+}
+
+.btn-ghost {
+  display: inline-block;
+  border: 2px solid var(--color-ink);
+  border-radius: 9999px;
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.btn-ghost:hover {
+  background: var(--color-cream);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Outlined words for the hero */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 244, 230, 0.3);
+}
+
+/* Film grain made from SVG noise, no image file needed */
+.grain {
+  opacity: 0.28;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Lime button for use on dark or photo backgrounds */
+.btn-lime {
+  display: inline-block;
+  background: var(--color-lime);
+  color: var(--color-ink);
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn-lime:hover {
+  background: var(--color-cream);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
