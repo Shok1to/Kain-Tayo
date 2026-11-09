@@ -51,7 +51,7 @@ export default function ShopFooter({ vendor }: { vendor: Vendor }) {
 
       <div className="border-t border-ink/30 bg-cream/60">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <p className="label text-ink/70">
+          <p className="max-w-xl text-sm leading-relaxed text-ink/80">
             This shop is part of the Kain Tayo marketplace. Kain Tayo does not
             cook or sell food.
           </p>
