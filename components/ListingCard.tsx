@@ -1,7 +1,18 @@
-import Link from "next/link";
-import { Listing, formatPrice, getSeller } from "@/data/mock";
-import { PhotoPlaceholder, TagPill } from "./ui";
+"use client";
 
+import Link from "next/link";
+import { Listing, formatPrice } from "@/data/mock";
+import { usePlatform } from "./PlatformProvider";
+import { Avatar, PhotoPlaceholder, TagPill } from "./ui";
+
+// One listing in a grid. Every listing belongs to a vendor, so the vendor
+// comes first on the card: their logo badge and name link to their shop.
+//
+// The whole card is also clickable and opens the listing. A link cannot sit
+// inside another link in HTML, so the card is a plain box. The title is the
+// link, and a "stretched" invisible layer (the ::after below) makes the
+// title's click area cover the whole card. The vendor link sits above that
+// layer with z-10, so clicking the vendor goes to their storefront instead.
 export default function ListingCard({
   listing,
   index = 0,
@@ -9,12 +20,13 @@ export default function ListingCard({
   listing: Listing;
   index?: number;
 }) {
-  const seller = getSeller(listing.sellerId);
+  const { getVendor } = usePlatform();
+  const vendor = getVendor(listing.vendorSlug);
+
   return (
-    <Link
-      href={`/listing/${listing.id}`}
+    <div
       style={{ animationDelay: `${Math.min(index, 12) * 60}ms` }}
-      className="group animate-fade-up flex flex-col gap-3"
+      className="group animate-fade-up relative flex flex-col gap-3"
     >
       <div className="relative">
         <PhotoPlaceholder
@@ -27,17 +39,35 @@ export default function ListingCard({
       </div>
 
       <div className="px-1">
-        <div className="flex items-baseline justify-between gap-3">
+        {vendor && (
+          <Link
+            href={`/vendors/${vendor.slug}`}
+            className="group/vendor relative z-10 inline-flex max-w-full items-center gap-2"
+          >
+            <Avatar
+              name={vendor.name}
+              brand={vendor.brand}
+              className="h-7 w-7 text-xs"
+            />
+            <span className="label truncate text-ink underline decoration-ink/30 underline-offset-4 group-hover/vendor:decoration-ink">
+              {vendor.name}
+            </span>
+          </Link>
+        )}
+
+        <div className="mt-2 flex items-baseline justify-between gap-3">
           <h3 className="font-display text-2xl leading-tight text-ink">
-            {listing.title}
+            <Link
+              href={`/listing/${listing.id}`}
+              className="after:absolute after:inset-0 after:content-['']"
+            >
+              {listing.title}
+            </Link>
           </h3>
           <p className="label shrink-0 text-base font-bold">
             {formatPrice(listing.price)}
           </p>
         </div>
-        <p className="label mt-1 text-ink/70">
-          {seller?.name}
-        </p>
         <p className="label text-ink/50">{listing.pickupSlot}</p>
         <div className="mt-2 flex flex-wrap gap-1">
           {listing.tags.slice(0, 3).map((t) => (
@@ -45,6 +75,6 @@ export default function ListingCard({
           ))}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

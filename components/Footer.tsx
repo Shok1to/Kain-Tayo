@@ -12,6 +12,15 @@ export default function Footer() {
             <Link href="/" className="hover:underline">
               Home
             </Link>
+            <Link href="/vendors" className="hover:underline">
+              Vendors
+            </Link>
+            <Link href="/vendor/signup" className="hover:underline">
+              Become a vendor
+            </Link>
+            <Link href="/vendor/dashboard" className="hover:underline">
+              Vendor dashboard
+            </Link>
             <Link href="/search" className="hover:underline">
               Search
             </Link>
@@ -24,7 +33,9 @@ export default function Footer() {
           </div>
         </div>
         <p className="label mt-8 text-cream/60">
-          Prototype for a demo. All sellers, food and payments are pretend.
+          Kain Tayo is a marketplace. It does not cook or sell food. Every
+          listing is sold by an independent vendor. Prototype for a demo, so
+          all vendors, food and payments are pretend.
         </p>
         <p className="font-display select-none text-[22vw] leading-[0.8] text-lime sm:text-[15rem]">
           Kain Tayo

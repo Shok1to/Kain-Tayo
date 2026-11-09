@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BRANDS, BrandKey } from "@/data/brand";
 import { Listing, initials } from "@/data/mock";
 
 // A flat colored tile with an overhead plate, standing in for a food photo.
@@ -40,17 +41,21 @@ export function PhotoPlaceholder({
   );
 }
 
-// Round badge with a cook's initials, used instead of an icon.
+// The vendor's logo placeholder: a badge with their initials, in their brand
+// color and their brand's shape (circle, arch, square...). Without a brand it
+// is a lime circle.
 export function Avatar({
   name,
+  brand,
   className = "",
 }: {
   name: string;
+  brand?: BrandKey;
   className?: string;
 }) {
   return (
     <span
-      className={`font-display flex shrink-0 items-center justify-center rounded-full border-2 border-ink bg-lime text-ink ${className}`}
+      className={`font-display relative flex shrink-0 items-center justify-center border-2 border-ink text-ink ${brand ? `${BRANDS[brand].bg} ${BRANDS[brand].shape}` : "bg-lime rounded-full"} ${className}`}
     >
       {initials(name)}
     </span>
@@ -74,6 +79,9 @@ export function Stars({
   rating: number;
   count?: number;
 }) {
+  if (rating === 0) {
+    return <span className="label text-ink/60">New vendor</span>;
+  }
   return (
     <span className="label inline-flex items-center gap-1 text-ink">
       <span className="font-bold">Rated {rating.toFixed(1)}</span>

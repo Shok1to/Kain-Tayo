@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getListing } from "@/data/mock";
+import { usePlatform } from "./PlatformProvider";
 
 export type CartLine = { listingId: string; qty: number };
 
@@ -25,9 +25,11 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = "kaintayo_cart";
-export const ORDER_KEY = "kaintayo_last_order";
+// The orders from the most recent checkout, so the confirmation page can show them.
+export const ORDER_KEY = "kaintayo_last_checkout";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { getListing } = usePlatform();
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
 
@@ -86,7 +88,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       0,
     );
     return { lines, ready, count, total, add, setQty, remove, clear };
-  }, [lines, ready, add, setQty, remove, clear]);
+  }, [lines, ready, add, setQty, remove, clear, getListing]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

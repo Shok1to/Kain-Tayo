@@ -25,13 +25,23 @@ export type Review = {
   date: string;
 };
 
-export type Seller = {
-  id: string;
-  name: string;
+import type { BrandKey } from "./brand";
+
+// "pending" means the food handler certificate is still being checked.
+export type VendorStatus = "pending" | "verified";
+
+export type Vendor = {
+  slug: string; // the web address friendly name, like "titababy" in /vendors/titababy
+  name: string; // business name
+  ownerName: string;
+  cuisine: string;
   city: string;
   bio: string;
-  rating: number;
-  verified: boolean;
+  rating: number; // 0 means no ratings yet
+  status: VendorStatus;
+  certificateFile?: string; // name of the food handler certificate they "uploaded" at signup
+  banner?: string; // optional photo for the storefront banner
+  brand: BrandKey; // the vendor's own color, used across their shop
   reviews: Review[];
 };
 
@@ -44,20 +54,37 @@ export type Listing = {
   tags: DietaryTag[];
   bg: string; // flat background color class for the photo placeholder
   image?: string; // optional real photo, like "/photos/lechon.jpg" inside the public folder
-  sellerId: string;
+  vendorSlug: string; // which vendor sells this
   pickupDate: string;
   pickupSlot: string;
   cutoff: string;
 };
 
-export const sellers: Seller[] = [
+// The cuisine types a vendor can choose when they sign up.
+export const CUISINES = [
+  "Roasts and lechon",
+  "Kakanin and rice cakes",
+  "Desserts and sweets",
+  "Grill and BBQ",
+  "Party trays",
+  "Plant based",
+  "Other",
+];
+
+// The 6 built in vendors. New vendors made through signup are saved
+// in the browser and added on top of these by PlatformProvider.
+export const seedVendors: Vendor[] = [
   {
-    id: "titababy",
+    slug: "titababy",
     name: "Tita Baby's Kitchen",
+    ownerName: "Baby Santos",
+    cuisine: "Roasts and lechon",
     city: "Mississauga",
     bio: "Three decades of fiesta cooking. Tita Baby roasts lechon every weekend for birthdays, baptisms and big family reunions.",
     rating: 4.9,
-    verified: true,
+    status: "verified",
+    banner: "/photos/wholelechon.jpg",
+    brand: "tomato",
     reviews: [
       {
         author: "Marites D.",
@@ -80,12 +107,16 @@ export const sellers: Seller[] = [
     ],
   },
   {
-    id: "lolanena",
+    slug: "lolanena",
     name: "Lola Nena's Kakanin",
+    ownerName: "Nena Reyes",
+    cuisine: "Kakanin and rice cakes",
     city: "Scarborough",
     bio: "Traditional rice cakes made the slow way, wrapped in banana leaf and cooked over coals the way Lola learned back home.",
     rating: 4.8,
-    verified: true,
+    status: "verified",
+    banner: "/photos/kakanintray.jpg",
+    brand: "ube",
     reviews: [
       {
         author: "Rowena P.",
@@ -108,12 +139,16 @@ export const sellers: Seller[] = [
     ],
   },
   {
-    id: "atejoy",
+    slug: "atejoy",
     name: "Ate Joy's Sweets",
+    ownerName: "Joy Mendoza",
+    cuisine: "Desserts and sweets",
     city: "Brampton",
     bio: "Small batch Filipino desserts. Ate Joy bakes in her home kitchen after her day job and sells out every single week.",
     rating: 4.7,
-    verified: true,
+    status: "verified",
+    banner: "/photos/lecheflan.jpg",
+    brand: "blush",
     reviews: [
       {
         author: "Katrina V.",
@@ -136,12 +171,16 @@ export const sellers: Seller[] = [
     ],
   },
   {
-    id: "kuyaben",
+    slug: "kuyaben",
     name: "Kuya Ben's Grill",
+    ownerName: "Ben Cruz",
+    cuisine: "Grill and BBQ",
     city: "Markham",
     bio: "Backyard grill master. Kuya Ben marinates overnight and grills over charcoal, so every skewer tastes like a weekend at home.",
     rating: 4.6,
-    verified: true,
+    status: "verified",
+    banner: "/photos/chickeninasal.jpg",
+    brand: "mango",
     reviews: [
       {
         author: "Dennis C.",
@@ -164,12 +203,16 @@ export const sellers: Seller[] = [
     ],
   },
   {
-    id: "mananglita",
+    slug: "mananglita",
     name: "Manang Lita's Table",
+    ownerName: "Lita Aquino",
+    cuisine: "Party trays",
     city: "Winnipeg",
     bio: "Party trays for every occasion. Manang Lita cooks big batches of pancit and lumpia for the whole community.",
     rating: 4.8,
-    verified: true,
+    status: "verified",
+    banner: "/photos/pancitbihon.jpg",
+    brand: "lime",
     reviews: [
       {
         author: "Beth O.",
@@ -192,12 +235,16 @@ export const sellers: Seller[] = [
     ],
   },
   {
-    id: "greenmabuhay",
+    slug: "greenmabuhay",
     name: "Green Mabuhay",
+    ownerName: "Mara Villanueva",
+    cuisine: "Plant based",
     city: "Vancouver",
     bio: "Plant based Filipino comfort food. Mara reimagines the classics so everyone at the table can enjoy a proper kainan.",
     rating: 4.7,
-    verified: true,
+    status: "verified",
+    banner: "/photos/veggiefeasttray.jpg",
+    brand: "mint",
     reviews: [
       {
         author: "Isabel Q.",
@@ -221,7 +268,7 @@ export const sellers: Seller[] = [
   },
 ];
 
-export const listings: Listing[] = [
+export const seedListings: Listing[] = [
   {
     id: "wholelechon",
     title: "Whole Lechon (about 20 lb)",
@@ -232,7 +279,7 @@ export const listings: Listing[] = [
     tags: ["Dairy free", "Gluten free", "Nut free"],
     bg: "bg-tomato",
     image: "/photos/wholelechon.jpg",
-    sellerId: "titababy",
+    vendorSlug: "titababy",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "2 PM to 4 PM",
     cutoff: "Wednesday, Nov 11 at 8 PM",
@@ -247,7 +294,7 @@ export const listings: Listing[] = [
     tags: ["Dairy free", "Gluten free", "Nut free"],
     bg: "bg-mango",
     image: "/photos/lechonbelly.jpg",
-    sellerId: "titababy",
+    vendorSlug: "titababy",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "11 AM to 1 PM",
     cutoff: "Wednesday, Nov 11 at 8 PM",
@@ -262,7 +309,7 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Dairy free"],
     bg: "bg-ube",
     image: "/photos/kakanintray.jpg",
-    sellerId: "lolanena",
+    vendorSlug: "lolanena",
     pickupDate: "Sunday, Nov 15",
     pickupSlot: "10 AM to 12 PM",
     cutoff: "Thursday, Nov 12 at 6 PM",
@@ -277,7 +324,7 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Vegan", "Dairy free", "Gluten free"],
     bg: "bg-mango",
     image: "/photos/bikotray.jpg",
-    sellerId: "lolanena",
+    vendorSlug: "lolanena",
     pickupDate: "Sunday, Nov 15",
     pickupSlot: "12 PM to 2 PM",
     cutoff: "Thursday, Nov 12 at 6 PM",
@@ -292,7 +339,7 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Gluten free", "Nut free"],
     bg: "bg-lime",
     image: "/photos/lecheflan.jpg",
-    sellerId: "atejoy",
+    vendorSlug: "atejoy",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "9 AM to 11 AM",
     cutoff: "Tuesday, Nov 10 at 9 PM",
@@ -307,7 +354,7 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Gluten free"],
     bg: "bg-ube",
     image: "/photos/ubehalaya.jpg",
-    sellerId: "atejoy",
+    vendorSlug: "atejoy",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "9 AM to 11 AM",
     cutoff: "Tuesday, Nov 10 at 9 PM",
@@ -322,7 +369,7 @@ export const listings: Listing[] = [
     tags: ["Halal", "Dairy free", "Gluten free", "Nut free"],
     bg: "bg-mango",
     image: "/photos/chickeninasal.jpg",
-    sellerId: "kuyaben",
+    vendorSlug: "kuyaben",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "4 PM to 6 PM",
     cutoff: "Wednesday, Nov 11 at 5 PM",
@@ -337,7 +384,7 @@ export const listings: Listing[] = [
     tags: ["Dairy free", "Nut free"],
     bg: "bg-tomato",
     image: "/photos/porkbbq.jpg",
-    sellerId: "kuyaben",
+    vendorSlug: "kuyaben",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "4 PM to 6 PM",
     cutoff: "Wednesday, Nov 11 at 5 PM",
@@ -352,7 +399,7 @@ export const listings: Listing[] = [
     tags: ["Halal", "Dairy free", "Gluten free"],
     bg: "bg-lime",
     image: "/photos/pancitbihon.jpg",
-    sellerId: "mananglita",
+    vendorSlug: "mananglita",
     pickupDate: "Sunday, Nov 15",
     pickupSlot: "1 PM to 3 PM",
     cutoff: "Friday, Nov 13 at 12 PM",
@@ -367,7 +414,7 @@ export const listings: Listing[] = [
     tags: ["Halal", "Dairy free", "Nut free"],
     bg: "bg-mint",
     image: "/photos/lumpiashanghai.jpg",
-    sellerId: "mananglita",
+    vendorSlug: "mananglita",
     pickupDate: "Sunday, Nov 15",
     pickupSlot: "1 PM to 3 PM",
     cutoff: "Friday, Nov 13 at 12 PM",
@@ -382,7 +429,7 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Vegan", "Dairy free", "Nut free"],
     bg: "bg-mint",
     image: "/photos/veggiefeasttray.jpg",
-    sellerId: "greenmabuhay",
+    vendorSlug: "greenmabuhay",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "12 PM to 2 PM",
     cutoff: "Thursday, Nov 12 at 8 PM",
@@ -397,24 +444,84 @@ export const listings: Listing[] = [
     tags: ["Vegetarian", "Gluten free"],
     bg: "bg-ube",
     image: "/photos/halohalokit.jpg",
-    sellerId: "greenmabuhay",
+    vendorSlug: "greenmabuhay",
     pickupDate: "Saturday, Nov 14",
     pickupSlot: "12 PM to 2 PM",
     cutoff: "Thursday, Nov 12 at 8 PM",
   },
 ];
 
-export function getSeller(id: string): Seller | undefined {
-  return sellers.find((s) => s.id === id);
+// ---------- orders (fake) ----------
+// "paid"      = buyer paid, money held safely in the vault
+// "advance"   = the 30% advance was released to the vendor, 48 hours before pickup
+// "completed" = buyer picked up and the vendor scanned the QR, so the rest was released
+export type OrderStatus = "paid" | "advance" | "completed";
+
+export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
+  paid: "Paid, held safely",
+  advance: "30% advance released",
+  completed: "Picked up, paid out",
+};
+
+export type OrderItem = {
+  title: string;
+  qty: number;
+  price: number; // price of one
+  // Each item can have its own pickup time, because one vendor can sell
+  // things that are picked up on different days. Older fake orders leave
+  // these empty and use the order's pickup time instead.
+  pickupDate?: string;
+  pickupSlot?: string;
+};
+
+export type Order = {
+  code: string; // like KT4821
+  vendorSlug: string;
+  buyerName: string;
+  items: OrderItem[];
+  total: number;
+  pickupDate: string;
+  pickupSlot: string;
+  status: OrderStatus;
+};
+
+// The pickup times of an order, as lines of text. Most orders have one line.
+// An order with items on different days or slots has one line for each.
+export function pickupLines(order: Order): string[] {
+  const lines = order.items.map((item) =>
+    item.pickupDate && item.pickupSlot
+      ? `${item.pickupDate}, ${item.pickupSlot}`
+      : `${order.pickupDate}, ${order.pickupSlot}`,
+  );
+  return Array.from(new Set(lines));
 }
 
-export function getListing(id: string): Listing | undefined {
-  return listings.find((l) => l.id === id);
+// How an order's money is split. The vendor gets 30% as an advance 48 hours
+// before pickup, and the other 70% after the buyer's QR code is scanned.
+//   released = money already in the vendor's wallet
+//   held     = money still waiting in the Kain Tayo vault
+export function orderMoney(order: Order) {
+  const round = (n: number) => Math.round(n * 100) / 100;
+  const advance = round(order.total * 0.3);
+  const rest = round(order.total - advance);
+  const released =
+    order.status === "paid" ? 0 : order.status === "advance" ? advance : order.total;
+  return { advance, rest, released, held: round(order.total - released) };
 }
 
-export function getListingsBySeller(sellerId: string): Listing[] {
-  return listings.filter((l) => l.sellerId === sellerId);
-}
+// A few pretend orders so each built in vendor has something on their dashboard.
+export const seedOrders: Order[] = [
+  { code: "KT4821", vendorSlug: "titababy", buyerName: "Marites D.", items: [{ title: "Whole Lechon (about 20 lb)", qty: 1, price: 320 }], total: 320, pickupDate: "Saturday, Nov 14", pickupSlot: "2 PM to 4 PM", status: "advance" },
+  { code: "KT4790", vendorSlug: "titababy", buyerName: "Cheska L.", items: [{ title: "Lechon Belly Roll", qty: 2, price: 95 }], total: 190, pickupDate: "Saturday, Nov 14", pickupSlot: "11 AM to 1 PM", status: "paid" },
+  { code: "KT4602", vendorSlug: "titababy", buyerName: "Jun R.", items: [{ title: "Lechon Belly Roll", qty: 1, price: 95 }], total: 95, pickupDate: "Saturday, Nov 7", pickupSlot: "11 AM to 1 PM", status: "completed" },
+  { code: "KT4802", vendorSlug: "lolanena", buyerName: "Rowena P.", items: [{ title: "Kakanin Party Tray", qty: 2, price: 48 }], total: 96, pickupDate: "Sunday, Nov 15", pickupSlot: "10 AM to 12 PM", status: "paid" },
+  { code: "KT4777", vendorSlug: "lolanena", buyerName: "Andre M.", items: [{ title: "Biko Sticky Rice Tray", qty: 1, price: 38 }], total: 38, pickupDate: "Sunday, Nov 15", pickupSlot: "12 PM to 2 PM", status: "paid" },
+  { code: "KT4811", vendorSlug: "atejoy", buyerName: "Katrina V.", items: [{ title: "Leche Flan Llanera", qty: 2, price: 28 }], total: 56, pickupDate: "Saturday, Nov 14", pickupSlot: "9 AM to 11 AM", status: "advance" },
+  { code: "KT4795", vendorSlug: "kuyaben", buyerName: "Dennis C.", items: [{ title: "Chicken Inasal Skewers (30 pieces)", qty: 2, price: 60 }], total: 120, pickupDate: "Saturday, Nov 14", pickupSlot: "4 PM to 6 PM", status: "advance" },
+  { code: "KT4760", vendorSlug: "kuyaben", buyerName: "Ramon B.", items: [{ title: "Pork BBQ Skewers (30 pieces)", qty: 1, price: 55 }], total: 55, pickupDate: "Saturday, Nov 14", pickupSlot: "4 PM to 6 PM", status: "paid" },
+  { code: "KT4808", vendorSlug: "mananglita", buyerName: "Beth O.", items: [{ title: "Pancit Bihon Party Tray", qty: 1, price: 45 }, { title: "Lumpiang Shanghai (100 pieces)", qty: 1, price: 50 }], total: 95, pickupDate: "Sunday, Nov 15", pickupSlot: "1 PM to 3 PM", status: "paid" },
+  { code: "KT4815", vendorSlug: "greenmabuhay", buyerName: "Isabel Q.", items: [{ title: "Vegetarian Pancit and Lumpia Tray", qty: 1, price: 42 }, { title: "Halo Halo Kit for 10", qty: 1, price: 36 }], total: 78, pickupDate: "Saturday, Nov 14", pickupSlot: "12 PM to 2 PM", status: "paid" },
+];
 
 export function formatPrice(amount: number): string {
   return `$${amount.toFixed(2)}`;
@@ -428,4 +535,10 @@ export function initials(name: string): string {
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join("");
+}
+
+// Turns a business name into a web address friendly name.
+// Letters and numbers only, so "Mama Lita's Eats" becomes "mamalitaseats".
+export function slugify(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "") || "vendor";
 }

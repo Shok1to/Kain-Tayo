@@ -2,10 +2,12 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ALL_TAGS, DietaryTag, getSeller, listings } from "@/data/mock";
+import { ALL_TAGS, DietaryTag } from "@/data/mock";
+import { usePlatform } from "./PlatformProvider";
 import ListingCard from "./ListingCard";
 
 function SearchInner({ initialQuery }: { initialQuery: string }) {
+  const { listings, getVendor } = usePlatform();
   const [query, setQuery] = useState(initialQuery);
   const [activeTags, setActiveTags] = useState<DietaryTag[]>([]);
 
@@ -21,7 +23,7 @@ function SearchInner({ initialQuery }: { initialQuery: string }) {
       const haystack = [
         l.title,
         l.description,
-        getSeller(l.sellerId)?.name ?? "",
+        getVendor(l.vendorSlug)?.name ?? "",
         ...l.tags,
       ]
         .join(" ")
@@ -30,7 +32,7 @@ function SearchInner({ initialQuery }: { initialQuery: string }) {
       const matchesTags = activeTags.every((t) => l.tags.includes(t));
       return matchesWords && matchesTags;
     });
-  }, [query, activeTags]);
+  }, [query, activeTags, listings, getVendor]);
 
   return (
     <div className="space-y-6">

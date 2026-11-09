@@ -9,6 +9,8 @@
   --color-mango: #ffc933;
   --color-ube: #cdb4f6;
   --color-tomato: #ff8a65;
+  --color-blush: #ffb8d1;
+  --color-sky: #a9d8f5;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-space-mono);
   --font-display: var(--font-instrument);
@@ -159,4 +161,54 @@ body {
   background: var(--color-cream);
   transform: translate(-2px, -2px);
   box-shadow: 4px 4px 0 var(--color-ink);
+}
+
+/* Outlined button for use on dark or photo backgrounds */
+.btn-ghost-light {
+  display: inline-block;
+  border: 2px solid var(--color-cream);
+  color: var(--color-cream);
+  border-radius: 9999px;
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.btn-ghost-light:hover {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  transform: translate(-2px, -2px);
+}
+
+/* ---------- shop mode ----------
+   Pages that belong to one vendor are wrapped in an element with data-shop.
+   It sets three variables (--shop-accent, --shop-display, --shop-weight),
+   and the rules below use them, so every heading, button and tag inside the
+   shop wears that vendor's look. Pages outside the shop never see this. */
+
+/* The Kain Tayo wordmark font, for the slim platform bar inside a shop.
+   It must not turn into the vendor's font. */
+.font-platform {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+[data-shop] .font-display {
+  font-family: var(--shop-display), Georgia, serif !important;
+  font-weight: var(--shop-weight, 400) !important;
+}
+
+[data-shop] .btn-primary {
+  background: var(--shop-accent);
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+}
+[data-shop] .btn-primary:hover {
+  background: var(--color-ink);
+  color: var(--shop-accent);
+  outline: none;
 }
