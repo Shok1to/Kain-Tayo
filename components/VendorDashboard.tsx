@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { usePlatform } from "./PlatformProvider";
 import { Avatar, PhotoPlaceholder, VerifiedBadge } from "./ui";
 import {
@@ -18,7 +19,7 @@ const statusColor: Record<OrderStatus, string> = {
 };
 
 // The dashboard page shows one of two things:
-//   nobody logged in -> a "pick who you are" screen (no password, it is fake)
+//   nobody logged in -> a pretend sign in page (nothing is checked for real)
 //   someone logged in -> that vendor's dashboard
 export default function VendorDashboard() {
   const { currentVendor, ready } = usePlatform();
@@ -28,48 +29,81 @@ export default function VendorDashboard() {
   return <Dashboard vendor={currentVendor} />;
 }
 
-// ---------- the fake login ----------
+// ---------- the sign in page (pretend) ----------
+// It looks like a real sign in, but nothing is checked for real. A demo email
+// is the shop's address name plus @example.com, and any password works.
 function FakeLogin() {
   const { vendors, login } = usePlatform();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const name = email.trim().toLowerCase().replace(/@example\.com$/, "");
+    const vendor = vendors.find((v) => v.slug === name);
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+    } else if (!vendor) {
+      setError("We could not find a shop with that email.");
+    } else {
+      login(vendor.slug);
+    }
+  }
+
+  const inputClass =
+    "mt-1 block min-h-11 w-full rounded-2xl border-2 border-ink bg-white px-4 py-2 text-base text-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink";
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-md space-y-8">
       <div>
         <p className="label text-ink/60">Vendor dashboard</p>
         <h1 className="font-display mt-2 text-5xl leading-none text-ink sm:text-6xl">
-          Log in <em className="italic">as a vendor</em>
+          Sign in
         </h1>
-        <p className="mt-3 max-w-lg text-ink/80">
-          This is a demo, so there is no password. Pick a vendor to see their
-          dashboard.
+        <p className="mt-3 text-ink/80">
+          Sign in to manage your listings, orders and wallet.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {vendors.map((v) => (
-          <button
-            key={v.slug}
-            type="button"
-            onClick={() => login(v.slug)}
-            className="flex items-center gap-4 rounded-3xl border-2 border-ink bg-white p-4 text-left transition hover:-translate-x-1 hover:-translate-y-1 hover:bg-lime/40 hover:shadow-[6px_6px_0_var(--color-ink)]"
+      <form onSubmit={submit} className="space-y-4" noValidate>
+        {error && (
+          <p
+            role="alert"
+            className="rounded-2xl border-2 border-ink bg-tomato/40 p-3 text-sm text-ink"
           >
-            <Avatar name={v.name} brand={v.brand} className="h-14 w-14 text-2xl" />
-            <span>
-              <span className="font-display block text-2xl leading-tight text-ink">
-                {v.name}
-              </span>
-              <span className="label text-ink/60">
-                {v.status === "verified" ? v.cuisine : "Pending verification"}
-              </span>
-            </span>
-          </button>
-        ))}
-      </div>
+            {error}
+          </p>
+        )}
+        <label className="block text-sm font-semibold text-ink">
+          Email
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Password
+          <input
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+        <button type="submit" className="btn-primary w-full px-6 py-3">
+          Sign in
+        </button>
+      </form>
 
       <p className="text-ink/70">
         New here?{" "}
-        <Link href="/vendor/signup" className="font-semibold underline">
-          Sign up as a vendor
+        <Link href="/signup" className="font-semibold underline">
+          Join Kain Tayo Ecosystem
         </Link>
       </p>
     </div>

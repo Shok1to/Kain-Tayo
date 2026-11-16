@@ -43,8 +43,8 @@ export default function VendorsDirectory() {
             <Link href="/vendor/dashboard" className="btn-ghost px-6 py-3">
               Vendor login
             </Link>
-            <Link href="/vendor/signup" className="btn-primary px-6 py-3">
-              Become a vendor
+            <Link href="/signup" className="btn-primary px-6 py-3">
+              Join Kain Tayo Ecosystem
             </Link>
           </div>
         </div>

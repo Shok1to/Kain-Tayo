@@ -52,10 +52,10 @@ export default function PlatformBar() {
 
         <div className="flex items-center gap-5">
           <Link
-            href="/vendor/signup"
+            href="/signup"
             className="label hidden hover:text-lime hover:underline md:inline"
           >
-            Become a vendor
+            Join Kain Tayo Ecosystem
           </Link>
           <Link
             href="/cart"
