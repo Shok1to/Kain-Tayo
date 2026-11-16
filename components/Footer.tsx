@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
 // The marketplace footer, used on every page that is not inside one vendor's
 // shop. (Shops have their own footer, see ShopFooter.tsx.)
@@ -44,9 +45,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-cream/20 pt-8">
-          <p className="font-display text-5xl leading-none text-lime sm:text-6xl">
-            Kain Tayo
-          </p>
+          <Logo className="h-28 w-28 sm:h-32 sm:w-32" />
           {/* Normal sentence case in the body font, so it reads like a sentence
               and not like a label. */}
           <p className="mt-5 max-w-xl text-base leading-relaxed text-cream/80">

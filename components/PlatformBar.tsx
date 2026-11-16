@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "./CartProvider";
+import Logo from "./Logo";
 
 // The slim Kain Tayo bar shown on top of every vendor shop. The shop belongs
 // to the vendor, so Kain Tayo shrinks to one thin line: a way back to the
@@ -13,12 +14,13 @@ export default function PlatformBar() {
   return (
     <div className="sticky top-0 z-30 border-b-2 border-ink bg-ink text-cream">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2">
-        <div className="flex items-baseline gap-4">
+        <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="font-platform text-3xl leading-none transition hover:text-lime"
+            aria-label="Kain Tayo home"
+            className="block shrink-0 transition hover:scale-105"
           >
-            Kain Tayo
+            <Logo className="h-10 w-10" />
           </Link>
           <span className="label hidden text-cream/60 sm:inline">
             Marketplace
