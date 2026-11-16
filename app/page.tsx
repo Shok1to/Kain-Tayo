@@ -28,8 +28,8 @@ export default function Home() {
             <Link href="/vendors" className="btn-lime py-4 text-base">
               Browse vendors
             </Link>
-            <Link href="/vendor/signup" className="btn-ghost-light py-4 text-base">
-              Become a vendor
+            <Link href="/signup" className="btn-ghost-light py-4 text-base">
+              Join Kain Tayo Ecosystem
             </Link>
           </div>
         </div>

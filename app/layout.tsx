@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   Bricolage_Grotesque,
   DM_Serif_Display,
@@ -71,7 +72,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <PlatformProvider>
           <CartProvider>
-            <Chrome>{children}</Chrome>
+            {/* Chrome reads the page address. On admin pages whose address
+                is only known at visit time (like one sign up record), that
+                has to wait for the visit, so Suspense lets it wait. Pages
+                built ahead of time are not affected. */}
+            <Suspense>
+              <Chrome>{children}</Chrome>
+            </Suspense>
           </CartProvider>
         </PlatformProvider>
       </body>

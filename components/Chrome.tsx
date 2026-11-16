@@ -37,6 +37,12 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
     vendor = listing ? getVendor(listing.vendorSlug) : undefined;
   }
 
+  // The sign up form and the admin area bring their own plain page layout,
+  // so they get no marketplace header or footer.
+  if (/^\/(signup|admin)(\/|$)/.test(pathname)) {
+    return <>{children}</>;
+  }
+
   if (vendor) {
     return (
       <ShopFrame vendor={vendor} asH1={Boolean(storefront)}>

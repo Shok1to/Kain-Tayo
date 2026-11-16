@@ -96,10 +96,10 @@ export default function Header() {
               display, which would cancel a "hidden" class on the button. */}
           <span className="hidden sm:block">
             <Link
-              href="/vendor/signup"
+              href="/signup"
               className="btn-lime whitespace-nowrap px-4 py-2 text-xs"
             >
-              Become a vendor
+              Join Kain Tayo Ecosystem
             </Link>
           </span>
           <Link
@@ -137,10 +137,10 @@ export default function Header() {
           Browse vendors
         </Link>
         <Link
-          href="/vendor/signup"
+          href="/signup"
           className="btn-lime whitespace-nowrap px-4 py-2 text-xs"
         >
-          Become a vendor
+          Join Kain Tayo Ecosystem
         </Link>
       </div>
     </header>

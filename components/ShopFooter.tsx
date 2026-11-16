@@ -59,8 +59,8 @@ export default function ShopFooter({ vendor }: { vendor: Vendor }) {
             <Link href="/" className="hover:underline">
               Back to marketplace
             </Link>
-            <Link href="/vendor/signup" className="hover:underline">
-              Become a vendor
+            <Link href="/signup" className="hover:underline">
+              Join Kain Tayo Ecosystem
             </Link>
           </div>
         </div>

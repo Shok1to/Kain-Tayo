@@ -32,8 +32,8 @@ export default function Footer() {
 
           <nav aria-label="For vendors" className="label flex flex-col gap-3">
             <p className="text-cream/50">For vendors</p>
-            <Link href="/vendor/signup" className={`text-lime ${linkClass}`}>
-              Become a vendor
+            <Link href="/signup" className={`text-lime ${linkClass}`}>
+              Join Kain Tayo Ecosystem
             </Link>
             <Link href="/vendor/dashboard" className={`text-lime ${linkClass}`}>
               Vendor dashboard
